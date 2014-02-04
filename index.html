@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>YoWassup?</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- jQuery -->
+        <script src="//code.jquery.com/jquery.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="http://code.angularjs.org/1.2.10/angular.js"></script>
+        <!-- Bootstrap JavaScript -->
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <!-- Bootstrap CSS -->
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <style>
+            #chat {
+                height: 500px;
+            }
+            #contentWrap {
+                display:none;
+            }
+            #chatWrap {
+                float:left;
+                border: 1px #000 solid;
+            }
+        </style>
+    </head>
+    <body ng-app="chatApp">
+        
+        <div class="wrapper" ng-controller="Ctrl">
+            <div id="nickWrap">
+                <p>Yo whas yo name?</p>
+                <p id="nickError"></p>
+                <form id="setNick" name="setNick" novalidate>
+                    <input type="text" id="nickname" name="nickname" ng-model="chatData.nickname"/>
+                    <input type="submit" ng-click="submitNick()"/>
+                </form>
+            </div>
+
+            <div id="contentWrap">
+                <div id="chatWrap">
+                    <div id="chat" ng-repeat="chatMessage in chatMessages">
+                        <span>{{chatMessage}}</span>
+                    </div>
+                    <form id="send-message" name="sendMessage" novalidate>
+                        <input type="text" id="message" name="message" ng-model="chatData.message"/>
+                        <input type="submit" ng-click="submitMessage()"/>
+                    </form>
+                </div>
+                <div id="users" ng-repeat="username in usernames">
+                    <span>{{username}}</span>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        <script>
+            // jQuery(function($) {
+            //     var socket = io.connect();
+            //     var $messageForm = $('#send-message');
+            //     var $messageBox = $('#message');
+            //     var $chat = $('.chat');
+
+            //     $messageForm.submit(function(e) {
+            //         e.preventDefault();
+            //         socket.emit('send message', $messageBox.val());
+            //         $messageBox.val('');
+            //     });
+
+            //     socket.on('new message', function(data) {
+            //         $chat.append(data + "<br/>");
+            //     });
+            // });
+
+            var app = angular.module('chatApp', []);
+
+            app.controller("Ctrl", function($scope) {
+
+                $scope.chatData = {};
+                $scope.chatMessages = ['test message'];
+                $scope.usernames = [];
+
+                $scope.socket = io.connect();
+                $scope.nickForm = angular.element(document.querySelector('#setNick'));
+                $scope.nickError = angular.element(document.querySelector('#nickError'));
+                $scope.nickBox = angular.element(document.querySelector('#nickname'));
+                $scope.messageForm = angular.element(document.querySelector('#send-message'));
+                $scope.messageBox = angular.element(document.querySelector('#message'));
+                $scope.chat = angular.element(document.querySelector('.chat'));
+
+                $scope.submitNick = function() {
+                    $scope.socket.emit('new user', $scope.chatData.nickname, function(data) {
+                        if(data) {
+                            angular.element(document.querySelector('#nickWrap')).hide();
+                            angular.element(document.querySelector('#contentWrap')).show();
+                        } else {
+                            $scope.nickError.html('That username is already taken! Try again.');
+                        }
+                    });
+                    $scope.chatData.nickname = ''; 
+                }
+
+                $scope.submitMessage = function() {
+                    $scope.socket.emit('send message', $scope.chatData.message);
+                    $scope.chatData.message = ''; 
+                }
+                
+                $scope.socket.on('new message', function(data) {
+                    $scope.$apply(function() {
+                        $scope.chatMessages.push(data);
+                    });
+                });
+
+                $scope.socket.on('usernames', function(data) {
+                    for(i=0; i < data.length; i++) {
+                        $scope.$apply(function() {
+                            $scope.usernames.push(data[i]);
+                        });
+                    }
+
+                });
+
+                
+            });
+        </script>
+    </body>
+</html>
