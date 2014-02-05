@@ -10,44 +10,99 @@
         <!-- Bootstrap JavaScript -->
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
         <!-- Bootstrap CSS -->
-        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="css/bootstrap-flat.css" rel="stylesheet" media="screen">
         <style>
             #chat {
                 height: 500px;
             }
+
             #contentWrap {
                 display:none;
             }
+
             #chatWrap {
                 float:left;
                 border: 1px #000 solid;
+            }
+
+            .whisper {
+                color: blue;
+                font-style: italic;
+            }
+
+            .error {
+                color:red;
+            }
+
+            .colorgraph {
+              height: 5px;
+              border-top: 0;
+              background: #c4e17f;
+              border-radius: 5px;
+              background-image: -webkit-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+              background-image: -moz-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+              background-image: -o-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+              background-image: linear-gradient(to right, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
             }
         </style>
     </head>
     <body ng-app="chatApp">
         
+        <!-- <div class="container" ng-controller="Ctrl">
+
+            <div id="nickWrap" class="row" style="margin-top:20px">
+                <p id="nickError"></p>
+                <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+                    <form role="form" id="setNick" name="setNick" novalidate>
+                        <fieldset>
+                            <h2>Yo whas yo name?</h2>
+                            <hr class="colorgraph">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-lg" id="nickname" name="nickname" placeholder="username" ng-model="chatData.nickname"/>
+                            </div>
+                            <hr class="colorgraph">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <input type="submit" class="btn btn-lg btn-success btn-block" ng-click="submitNick()" value="Sign In">
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div> -->
+
         <div class="wrapper" ng-controller="Ctrl">
             <div id="nickWrap">
                 <p>Yo whas yo name?</p>
                 <p id="nickError"></p>
                 <form id="setNick" name="setNick" novalidate>
-                    <input type="text" id="nickname" name="nickname" ng-model="chatData.nickname"/>
-                    <input type="submit" ng-click="submitNick()"/>
+                    <div class="form-group">
+                        <label for="nickname" class="col-lg-2 control-label">Yo whas yo name</label>
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control" id="nickname" name="nickname" ng-model="chatData.nickname"/>
+                        </div>
+                    </div>
+                    
+                    <input type="submit" class="btn btn-success" ng-click="submitNick()"/>
                 </form>
             </div>
 
             <div id="contentWrap">
                 <div id="chatWrap">
-                    <div id="chat" ng-repeat="chatMessage in chatMessages">
-                        <span>{{chatMessage}}</span>
+                    <div id="chat">
+                        <div ng-repeat="chatMessage in chatMessages track by $index">
+                            <span ng-if="chatMessage.type != 'error'" class="{{chatMessage.type}}"><b>{{chatMessage.nick}}</b> : {{chatMessage.msg}}</span>
+                            <span ng-if="chatMessage.type == 'error'" class="{{chatMessage.type}}">{{chatMessage.msg}}</span>
+                        </div>
                     </div>
-                    <form id="send-message" name="sendMessage" novalidate>
+                    <form id="send-message" name="sendMessage" class="form-horizontal" novalidate>
                         <input type="text" id="message" name="message" ng-model="chatData.message"/>
-                        <input type="submit" ng-click="submitMessage()"/>
+                        <input type="submit" class="btn btn-success" ng-click="submitMessage()"/>
                     </form>
                 </div>
-                <div id="users" ng-repeat="username in usernames">
-                    <span>{{username}}</span>
+                <div id="users">
+                    <div ng-repeat="username in usernames track by $index">{{username}}</div>
                 </div>
             </div>
         </div>
@@ -77,7 +132,7 @@
             app.controller("Ctrl", function($scope) {
 
                 $scope.chatData = {};
-                $scope.chatMessages = ['test message'];
+                $scope.chatMessages = [];
                 $scope.usernames = [];
 
                 $scope.socket = io.connect();
@@ -111,13 +166,23 @@
                     });
                 });
 
-                $scope.socket.on('usernames', function(data) {
-                    for(i=0; i < data.length; i++) {
-                        $scope.$apply(function() {
-                            $scope.usernames.push(data[i]);
-                        });
-                    }
+                $scope.socket.on('whisper', function(data) {
+                    $scope.$apply(function() {
+                        //whisper
+                        $scope.chatMessages.push(data);
+                    });
+                });
 
+                $scope.socket.on('usernames', function(data) {
+                    $scope.$apply(function() {
+                        $scope.usernames = data;
+                    });
+                });
+
+                $scope.socket.on('error', function(data) {
+                    $scope.$apply(function() {
+                        $scope.chatMessages.push(data);
+                    });
                 });
 
                 
