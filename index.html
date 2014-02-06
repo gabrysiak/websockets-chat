@@ -12,7 +12,7 @@
         <!-- Our Styles -->
         <link href="css/main.css" rel="stylesheet" media="screen">
     </head>
-    <body ng-app="chatApp">
+    <body ng-app="chatApp" ng-cloak>
         
         <div class="container" ng-controller="Ctrl">
 
@@ -24,60 +24,25 @@
                             <h2>Yo whas yo name?</h2>
                             <hr class="colorgraph">
                             <div class="form-group">
-                                <input type="text" class="form-control input-lg" id="nickname" name="nickname" placeholder="nickname" ng-model="chatData.nickname"/>
-                                <input type="text" class="form-control input-lg" id="email" name="email" placeholder="email" ng-model="chatData.email"/>
+                                <input type="text" class="form-control input-lg" id="nickname" name="nickname" placeholder="nickname" ng-model="chatData.nickname" required />
+                                <input type="email" class="form-control input-lg" id="email" name="email" placeholder="email" ng-model="chatData.email" required />
                             </div>
                             <hr class="colorgraph">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12 col-md-12">
-                                    <input type="submit" class="btn btn-lg btn-success btn-block" ng-click="submitNick()" value="Sign In">
+                                    <input type="submit" class="btn btn-lg btn-success btn-block" ng-click="submitNick()" value="Sign In" ng-disabled="setNick.$invalid" >
                                 </div>
                             </div>
                         </fieldset>
                     </form>
                 </div>
             </div>
-        
-
-        <!-- <div class="wrapper" ng-controller="Ctrl">
-            <div id="nickWrap">
-                <p>Yo whas yo name?</p>
-                <p id="nickError"></p>
-                <form id="setNick" name="setNick" novalidate>
-                    <div class="form-group">
-                        <label for="nickname" class="col-lg-2 control-label">Yo whas yo name</label>
-                        <div class="col-lg-6">
-                            <input type="text" class="form-control" id="nickname" name="nickname" ng-model="chatData.nickname"/>
-                        </div>
-                    </div>
-                    
-                    <input type="submit" class="btn btn-success" ng-click="submitNick()"/>
-                </form>
-            </div> -->
-     
-            <!-- <div id="contentWrap">
-                <div id="chatWrap">
-                    <div id="chat">
-                        <div ng-repeat="chatMessage in chatMessages track by $index">
-                            <span ng-if="chatMessage.type != 'error'" class="{{chatMessage.type}}"><b>{{chatMessage.nick}}</b> : {{chatMessage.msg}}</span>
-                            <span ng-if="chatMessage.type == 'error'" class="{{chatMessage.type}}">{{chatMessage.msg}}</span>
-                        </div>
-                    </div>
-                    <form id="send-message" name="sendMessage" class="form-horizontal" novalidate>
-                        <input type="text" id="message" name="message" ng-model="chatData.message"/>
-                        <input type="submit" class="btn btn-success" ng-click="submitMessage()"/>
-                    </form>
-                </div>
-                <div id="users">
-                    <div ng-repeat="username in usernames track by $index">{{username}}</div>
-                </div>
-            </div> -->
 
             <div id="contentWrap" class="row">
                 <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <span class="glyphicon glyphicon-comment"></span> Chat
+                            <span class="glyphicon glyphicon-comment"></span> YoWassup?
                             <div class="btn-group pull-right">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                                     <span class="glyphicon glyphicon-chevron-down"></span>
@@ -100,10 +65,9 @@
                         <div class="panel-body">
                             <ul class="chat">
                                 <li ng-class-odd="'right cleanfix'" ng-class-even="'left cleanfix'" ng-repeat="chatMessage in chatMessages track by $index">
-
-                                   
                                         <span ng-class-odd="'chat-img pull-right'" ng-class-even="'chat-img pull-left'">
-                                            <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" />
+                                            <!-- <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" /> -->
+                                            <img src="http://www.gravatar.com/avatar/{{chatMessage.emailHash}}" alt="User Avatar" class="img-circle" />
                                         </span>
                                         <div ng-if="chatMessage.type != 'error'" class="{{chatMessage.type}} chat-body clearfix">
                                             <div class="header" ng-if="$odd">
@@ -127,22 +91,24 @@
                                                {{chatMessage.msg}}
                                             </p>
                                         </div>
-                                    
                                 </li>
                             </ul>
                         </div>
                         <div class="panel-footer">
-                            <div class="input-group">
-                                <input id="btn-input" type="text" class="form-control input-sm" ame="message" ng-model="chatData.message" placeholder="Type your message here..." />
-                                <span class="input-group-btn">
-                                    <button class="btn btn-success btn-sm" id="btn-chat" ng-click="submitMessage()">
-                                        Send</button>
-                                </span>
-                            </div>
+                            <form role="form" id="sendMsg" name="sendMsg" novalidate>
+                                <div class="input-group">
+                                    <input id="btn-input" type="text" class="form-control input-sm" ame="message" ng-model="chatData.message" placeholder="Type your message here..." required />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-success btn-sm" id="btn-chat" ng-click="submitMessage()" ng-disabled="sendMsg.$invalid">
+                                            Send</button>
+                                    </span>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div id="users">
                 <div ng-repeat="username in usernames track by $index">{{username}}</div>
             </div>

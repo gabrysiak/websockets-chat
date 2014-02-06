@@ -57,6 +57,9 @@
     margin-right: 60px;
 }
 
+.img-circle {
+  max-width: 5em;
+}
 
 .chat li .chat-body p
 {
