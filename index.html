@@ -3,54 +3,20 @@
     <head>
         <title>YoWassup?</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- jQuery -->
-        <script src="//code.jquery.com/jquery.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="http://code.angularjs.org/1.2.10/angular.js"></script>
-        <!-- Bootstrap JavaScript -->
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        
+        <!-- Bootstrap Glyphicons -->
+        <!-- <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet"> -->
+        <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
         <!-- Bootstrap CSS -->
         <link href="css/bootstrap-flat.css" rel="stylesheet" media="screen">
-        <style>
-            #chat {
-                height: 500px;
-            }
-
-            #contentWrap {
-                display:none;
-            }
-
-            #chatWrap {
-                float:left;
-                border: 1px #000 solid;
-            }
-
-            .whisper {
-                color: blue;
-                font-style: italic;
-            }
-
-            .error {
-                color:red;
-            }
-
-            .colorgraph {
-              height: 5px;
-              border-top: 0;
-              background: #c4e17f;
-              border-radius: 5px;
-              background-image: -webkit-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
-              background-image: -moz-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
-              background-image: -o-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
-              background-image: linear-gradient(to right, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
-            }
-        </style>
+        <!-- Our Styles -->
+        <link href="css/main.css" rel="stylesheet" media="screen">
     </head>
     <body ng-app="chatApp">
         
-        <!-- <div class="container" ng-controller="Ctrl">
+        <div class="container" ng-controller="Ctrl">
 
-            <div id="nickWrap" class="row" style="margin-top:20px">
+            <div id="nickWrap" class="row">
                 <p id="nickError"></p>
                 <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
                     <form role="form" id="setNick" name="setNick" novalidate>
@@ -58,7 +24,8 @@
                             <h2>Yo whas yo name?</h2>
                             <hr class="colorgraph">
                             <div class="form-group">
-                                <input type="text" class="form-control input-lg" id="nickname" name="nickname" placeholder="username" ng-model="chatData.nickname"/>
+                                <input type="text" class="form-control input-lg" id="nickname" name="nickname" placeholder="nickname" ng-model="chatData.nickname"/>
+                                <input type="text" class="form-control input-lg" id="email" name="email" placeholder="email" ng-model="chatData.email"/>
                             </div>
                             <hr class="colorgraph">
                             <div class="row">
@@ -70,9 +37,9 @@
                     </form>
                 </div>
             </div>
-        </div> -->
+        
 
-        <div class="wrapper" ng-controller="Ctrl">
+        <!-- <div class="wrapper" ng-controller="Ctrl">
             <div id="nickWrap">
                 <p>Yo whas yo name?</p>
                 <p id="nickError"></p>
@@ -86,9 +53,9 @@
                     
                     <input type="submit" class="btn btn-success" ng-click="submitNick()"/>
                 </form>
-            </div>
-
-            <div id="contentWrap">
+            </div> -->
+     
+            <!-- <div id="contentWrap">
                 <div id="chatWrap">
                     <div id="chat">
                         <div ng-repeat="chatMessage in chatMessages track by $index">
@@ -104,89 +71,93 @@
                 <div id="users">
                     <div ng-repeat="username in usernames track by $index">{{username}}</div>
                 </div>
+            </div> -->
+
+            <div id="contentWrap" class="row">
+                <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-comment"></span> Chat
+                            <div class="btn-group pull-right">
+                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                    <span class="glyphicon glyphicon-chevron-down"></span>
+                                </button>
+                                <ul class="dropdown-menu slidedown">
+                                    <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-refresh">
+                                    </span>Refresh</a></li>
+                                    <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-ok-sign">
+                                    </span>Available</a></li>
+                                    <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-remove">
+                                    </span>Busy</a></li>
+                                    <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-time"></span>
+                                        Away</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-off"></span>
+                                        Sign Out</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="chat">
+                                <li ng-class-odd="'right cleanfix'" ng-class-even="'left cleanfix'" ng-repeat="chatMessage in chatMessages track by $index">
+
+                                   
+                                        <span ng-class-odd="'chat-img pull-right'" ng-class-even="'chat-img pull-left'">
+                                            <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" />
+                                        </span>
+                                        <div ng-if="chatMessage.type != 'error'" class="{{chatMessage.type}} chat-body clearfix">
+                                            <div class="header" ng-if="$odd">
+                                                <strong class="primary-font">{{chatMessage.nick}}</strong>
+                                                <small class="pull-right text-muted">
+                                                    <span class="glyphicon glyphicon-time"></span>{{chatMessage.created}}
+                                                </small>
+                                            </div>
+                                            <div class="header" ng-if="$even">
+                                                <small class="text-muted">
+                                                    <span class="glyphicon glyphicon-time"></span>{{chatMessage.created}}
+                                                </small>
+                                                <strong class="primary-font pull-right">{{chatMessage.nick}}</strong>
+                                            </div>
+                                            <p>
+                                                {{chatMessage.msg}}
+                                            </p>
+                                        </div>
+                                        <div ng-if="chatMessage.type == 'error'" class="{{chatMessage.type}} chat-body clearfix">
+                                            <p>
+                                               {{chatMessage.msg}}
+                                            </p>
+                                        </div>
+                                    
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="panel-footer">
+                            <div class="input-group">
+                                <input id="btn-input" type="text" class="form-control input-sm" ame="message" ng-model="chatData.message" placeholder="Type your message here..." />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-success btn-sm" id="btn-chat" ng-click="submitMessage()">
+                                        Send</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="users">
+                <div ng-repeat="username in usernames track by $index">{{username}}</div>
             </div>
         </div>
-        
-        
-        
-        <script>
-            // jQuery(function($) {
-            //     var socket = io.connect();
-            //     var $messageForm = $('#send-message');
-            //     var $messageBox = $('#message');
-            //     var $chat = $('.chat');
-
-            //     $messageForm.submit(function(e) {
-            //         e.preventDefault();
-            //         socket.emit('send message', $messageBox.val());
-            //         $messageBox.val('');
-            //     });
-
-            //     socket.on('new message', function(data) {
-            //         $chat.append(data + "<br/>");
-            //     });
-            // });
-
-            var app = angular.module('chatApp', []);
-
-            app.controller("Ctrl", function($scope) {
-
-                $scope.chatData = {};
-                $scope.chatMessages = [];
-                $scope.usernames = [];
-
-                $scope.socket = io.connect();
-                $scope.nickForm = angular.element(document.querySelector('#setNick'));
-                $scope.nickError = angular.element(document.querySelector('#nickError'));
-                $scope.nickBox = angular.element(document.querySelector('#nickname'));
-                $scope.messageForm = angular.element(document.querySelector('#send-message'));
-                $scope.messageBox = angular.element(document.querySelector('#message'));
-                $scope.chat = angular.element(document.querySelector('.chat'));
-
-                $scope.submitNick = function() {
-                    $scope.socket.emit('new user', $scope.chatData.nickname, function(data) {
-                        if(data) {
-                            angular.element(document.querySelector('#nickWrap')).hide();
-                            angular.element(document.querySelector('#contentWrap')).show();
-                        } else {
-                            $scope.nickError.html('That username is already taken! Try again.');
-                        }
-                    });
-                    $scope.chatData.nickname = ''; 
-                }
-
-                $scope.submitMessage = function() {
-                    $scope.socket.emit('send message', $scope.chatData.message);
-                    $scope.chatData.message = ''; 
-                }
-                
-                $scope.socket.on('new message', function(data) {
-                    $scope.$apply(function() {
-                        $scope.chatMessages.push(data);
-                    });
-                });
-
-                $scope.socket.on('whisper', function(data) {
-                    $scope.$apply(function() {
-                        //whisper
-                        $scope.chatMessages.push(data);
-                    });
-                });
-
-                $scope.socket.on('usernames', function(data) {
-                    $scope.$apply(function() {
-                        $scope.usernames = data;
-                    });
-                });
-
-                $scope.socket.on('error', function(data) {
-                    $scope.$apply(function() {
-                        $scope.chatMessages.push(data);
-                    });
-                });
-
-                
-            });
-        </script>
+        <!-- jQuery -->
+        <script src="//code.jquery.com/jquery.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="bower_components/angular/angular.min.js"></script>
+        <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+        <!-- Bootstrap JavaScript -->
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <!-- CryptoJS -->
+        <script src="bower_components/cryptojs/rollups/md5.js"></script>
+        <!-- MomentJS -->
+        <script src="bower_components/momentjs/min/moment.min.js"></script>
+        <script src="js/app.js"></script>
     </body>
 </html>

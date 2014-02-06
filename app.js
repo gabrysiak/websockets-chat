@@ -7,6 +7,8 @@ var express = require('express'),
 
 server.listen(3000);
 
+app.use(express.static(__dirname + '/app'));
+
 mongoose.connect('mongodb://localhost/chat', function(err) {
     if(err) {
         console.log(err);
@@ -14,13 +16,28 @@ mongoose.connect('mongodb://localhost/chat', function(err) {
         console.log('Connected to mongodb');
     }
 });
-app.use(express.static(__dirname + '/'));
+
+var chatSchema = mongoose.Schema({
+    // name: {first: String, last: String},
+    nick: String,
+    msg: String,
+    created: {type: Date, default: Date.now}
+});
+
+var Chat = mongoose.model('Message', chatSchema);
 
 app.get('/', function(req, res) {
     res.sendfile(__dirname + '/index.html');
 });
 
 io.sockets.on('connection', function(socket) {
+    var query = Chat.find({});
+
+    query.sort('-created').limit(8).exec(function(err, docs) {
+        if(err) throw err;
+        console.log('Sending old msgs');
+        socket.emit('load old msgs', docs);
+    });
     socket.on('new user', function(data, callback) {
         if (data in users) {
             callback(false);
@@ -57,7 +74,11 @@ io.sockets.on('connection', function(socket) {
                 io.sockets.emit('error', {msg: 'Please enter a message for your whisper.', type: 'error'});
             }
         } else {
-            io.sockets.emit('new message', {msg: msg, nick: socket.nickname, type: 'new-message'});
+            var newMsg = new Chat({msg: msg, nick: socket.nickname});
+            newMsg.save(function(err){
+                if(err) throw err;
+                io.sockets.emit('new message', {msg: msg, nick: socket.nickname, created: Date.now, type: 'new-message'});
+            });
         }
     });
 
