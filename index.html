@@ -112,7 +112,7 @@
             {{ currentUser }}
             <div id="users">
                 <div ng-repeat="username in usernames">
-                <span class="glyphicon {{currentUser.statusIcon}}"></span>{{username.nickname}}
+                <span class="glyphicon {{ statusIcon[username.status] }}"></span>{{username.nickname}}
             </div>
             
         </div>

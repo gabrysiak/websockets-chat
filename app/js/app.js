@@ -76,9 +76,7 @@ app.controller("Ctrl", function($scope) {
 
     // listen to usernames
     $scope.socket.on('usernames', function(data) {
-        $scope.$apply(function() {
-            $scope.usernames = data;
-        });
+        $scope.updateUserStatus(data);
         console.log(data);
     });
 
@@ -96,6 +94,12 @@ app.controller("Ctrl", function($scope) {
             $scope.updateMessages(docs[i]);
         };
     });
+
+    $scope.updateUserStatus = function(data) {
+        $scope.$apply(function() {
+            $scope.usernames = data;
+        });
+    };
 
     // add new message to current messages
     $scope.updateMessages = function(data) {
@@ -117,7 +121,7 @@ app.controller("Ctrl", function($scope) {
 
     $scope.setStatus = function(status) {
         this.$emit('SET_STATUS', status);
-
+        
         return status;
     };
     
@@ -126,6 +130,7 @@ app.controller("Ctrl", function($scope) {
         $scope.status = status;
         $scope.currentUser.status = status;
         $scope.currentUser.statusIcon = $scope.statusIcon[status];
+        $scope.socket.emit('update user status', $scope.currentUser);
     });
 
 });

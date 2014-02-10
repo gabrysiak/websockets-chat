@@ -44,7 +44,7 @@ io.sockets.on('connection', function(socket) {
 
     // listen to new user event
     socket.on('new user', function(data, callback) {
-        if (data.email in users) {
+        if( data.email in users ) {
             callback(false);
         } else if(data.nickname in users) {
             callback(false);
@@ -74,6 +74,23 @@ io.sockets.on('connection', function(socket) {
             // io.sockets.emit('usernames', {nickname: socket.nickname, email: socket.email, status: socket.status});
         }
     });
+
+    socket.on('update user status', function(data) {
+        if( !data.nickname ) return;
+
+        updateUserStatus(data);
+        updateNicknames();
+    });
+
+    // update user status
+    function updateUserStatus(data) {
+        var name = data.nickname;
+
+        var match = _.find( users, function(item) { return item.nickname === name } );
+        if( match ) {
+            match.status = data.status;
+        }
+    }
 
     // send updated nickenames
     function updateNicknames() {
