@@ -5,6 +5,7 @@
     "dependencies":{
         "socket.io":"0.9.16",
         "express":"3.2.6",
+        "underscore":"1.5.2",
         "mongoose":"3.8.3"
     }
 }

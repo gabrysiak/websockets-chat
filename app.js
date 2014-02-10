@@ -3,7 +3,8 @@ var express = require('express'),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server);
     mongoose = require('mongoose'),
-    users = {};
+    _ = require('underscore'),
+    users = [];
 
 server.listen(3000);
 
@@ -22,7 +23,7 @@ var chatSchema = mongoose.Schema({
     nick: String,
     msg: String,
     email: String,
-    userStatus: { type: String, default: 'Available'},
+    status: String,
     created: {type: Date, default: Date.now}
 });
 
@@ -48,25 +49,36 @@ io.sockets.on('connection', function(socket) {
         } else if(data.nickname in users) {
             callback(false);
         } else {
+
             callback(true);
 
             var email = data.email;
 
+            var user = {
+                nickname: data.nickname,
+                email: email.trim().toLowerCase(),
+                status: data.status
+            };
+
+            users.push(user);
+
             socket.nickname = data.nickname;
             socket.email = email.trim().toLowerCase();
-            socket.userStatus = data.userStatus;
+            socket.status = data.status;
 
             
-            users[socket.nickname] = socket;
-            users[socket.email] = socket;
-            users[socket.userStatus] = socket;
+            // users[socket.nickname] = socket;
+            // users[socket.email] = socket;
+            // users[socket.status] = socket;
             updateNicknames();
+            // io.sockets.emit('usernames', {nickname: socket.nickname, email: socket.email, status: socket.status});
         }
     });
 
     // send updated nickenames
     function updateNicknames() {
-        io.sockets.emit('usernames', Object.keys(users));
+        // io.sockets.emit('usernames', Object.keys(users));
+        io.sockets.emit('usernames', users);
     }
 
     // listen to send message event
@@ -80,7 +92,7 @@ io.sockets.on('connection', function(socket) {
                 var name = msg.substring(0, ind);
                 var msg = msg.substring(ind + 1);
                 if(name in users) {
-                    users[name].emit('whisper', {msg: msg, nick: socket.nickname, email: socket.email, userStatus: socket.userStatus, created: created, type: 'whisper'});
+                    users[name].emit('whisper', {msg: msg, nick: socket.nickname, email: socket.email, status: socket.status, created: created, type: 'whisper'});
                     console.log('Whisper');
                 } else {
                     io.sockets.emit('error', {msg: 'Error: Enter a valid user.', type: 'error'});
@@ -92,10 +104,10 @@ io.sockets.on('connection', function(socket) {
                 io.sockets.emit('error', {msg: 'Please enter a message for your whisper.', type: 'error'});
             }
         } else {
-            var newMsg = new Chat({msg: msg, nick: socket.nickname, email: socket.email, userStatus: socket.userStatus});
+            var newMsg = new Chat({msg: msg, nick: socket.nickname, email: socket.email, status: socket.status});
             newMsg.save(function(err){
                 if(err) throw err;
-                io.sockets.emit('new message', {msg: msg, nick: socket.nickname, email: socket.email, userStatus: socket.userStatus,created: created, type: 'new-message'});
+                io.sockets.emit('new message', {msg: msg, nick: socket.nickname, email: socket.email, status: socket.status,created: created, type: 'new-message'});
             });
         }
     });
@@ -103,8 +115,13 @@ io.sockets.on('connection', function(socket) {
     // listen to disconnect event
     socket.on('disconnect', function(data) {
         if(!socket.nickname || !socket.email) return;
-        delete users[socket.nickname];
-        delete users[socket.email];
+
+        // remove object from array
+        users = _.filter(users, function(item) {
+             return item.nickname !== socket.nickname
+        });
+        // delete users[socket.nickname];
+        // delete users[socket.email];
         updateNicknames();
     });
 });

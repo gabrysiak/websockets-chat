@@ -48,16 +48,16 @@
                                     <span class="glyphicon glyphicon-chevron-down"></span>
                                 </button>
                                 <ul class="dropdown-menu slidedown">
-                                    <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-refresh">
+                                    <li><a href="#"><span class="glyphicon glyphicon-refresh">
                                     </span>Refresh</a></li>
-                                    <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-ok-sign">
+                                    <li ng-class="{active: status == 'Available'}"><a href="#" ng-click="setStatus('Available')"><span class="glyphicon glyphicon-ok-sign">
                                     </span>Available</a></li>
-                                    <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-remove">
+                                    <li ng-class="{active: status == 'Busy'}"><a href="#" ng-click="setStatus('Busy')"><span class="glyphicon glyphicon-remove">
                                     </span>Busy</a></li>
-                                    <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-time"></span>
+                                    <li ng-class="{active: status == 'Away'}"><a href="#" ng-click="setStatus('Away')"><span class="glyphicon glyphicon-time"></span>
                                         Away</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-off"></span>
+                                    <li><a href="#"><span class="glyphicon glyphicon-off"></span>
                                         Sign Out</a></li>
                                 </ul>
                             </div>
@@ -97,7 +97,7 @@
                         <div class="panel-footer">
                             <form role="form" id="sendMsg" name="sendMsg" novalidate>
                                 <div class="input-group">
-                                    <input id="btn-input" type="text" class="form-control input-sm" ame="message" ng-model="chatData.message" placeholder="Type your message here..." required />
+                                    <input id="btn-input" type="text" class="form-control input-sm" name="message" ng-model="chatData.message" placeholder="Type your message here..." required />
                                     <span class="input-group-btn">
                                         <button class="btn btn-success btn-sm" id="btn-chat" ng-click="submitMessage()" ng-disabled="sendMsg.$invalid">
                                             Send</button>
@@ -108,10 +108,13 @@
                     </div>
                 </div>
             </div>
-
+            {{ usernames }}
+            {{ currentUser }}
             <div id="users">
-                <div ng-repeat="username in usernames track by $index">{{username}}</div>
+                <div ng-repeat="username in usernames">
+                <span class="glyphicon {{currentUser.statusIcon}}"></span>{{username.nickname}}
             </div>
+            
         </div>
         <!-- jQuery -->
         <script src="//code.jquery.com/jquery.js"></script>
@@ -124,6 +127,8 @@
         <script src="bower_components/cryptojs/rollups/md5.js"></script>
         <!-- MomentJS -->
         <script src="bower_components/momentjs/min/moment.min.js"></script>
+        <!-- Underscore -->
+        <script src="bower_components/underscore/underscore-min.js"></script>
         <script src="js/app.js"></script>
     </body>
 </html>

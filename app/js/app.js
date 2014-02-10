@@ -11,6 +11,14 @@ app.controller("Ctrl", function($scope) {
         Away: 'Away'
     };
 
+    $scope.statusIcon = {
+        Available: 'glyphicon-ok-sign',
+        Busy: 'glyphicon-remove',
+        Away: 'glyphicon-time'
+    };
+
+    $scope.currentUser = {};
+
     $scope.socket = io.connect();
     $scope.nickForm = angular.element(document.querySelector('#setNick'));
     $scope.nickError = angular.element(document.querySelector('#nickError'));
@@ -21,6 +29,16 @@ app.controller("Ctrl", function($scope) {
 
     // send nickname
     $scope.submitNick = function() {
+        // set everyones status to Available on connect
+        $scope.chatData.status = $scope.setStatus($scope.myStatus.Available);
+        $scope.currentUser = {
+            nickname: $scope.chatData.nickname,
+            email: $scope.chatData.email,
+            status: $scope.chatData.status,
+            statusIcon: $scope.statusIcon[this.status]
+            
+        };
+
         $scope.socket.emit('new user', $scope.chatData, function(data) {
             if(data) {
                 angular.element(document.querySelector('#nickWrap')).hide();
@@ -36,6 +54,7 @@ app.controller("Ctrl", function($scope) {
     // send message
     $scope.submitMessage = function() {
         $scope.updateCreated();
+        console.log($scope.chatData.message);
         $scope.socket.emit('send message', $scope.chatData.message);
         $scope.chatData.message = ''; 
     }
@@ -95,5 +114,18 @@ app.controller("Ctrl", function($scope) {
     $scope.md5Hash = function(email) {
         return CryptoJS.MD5(email).toString();
     };
+
+    $scope.setStatus = function(status) {
+        this.$emit('SET_STATUS', status);
+
+        return status;
+    };
     
+    // update status
+    $scope.$on('SET_STATUS', function(event, status) {
+        $scope.status = status;
+        $scope.currentUser.status = status;
+        $scope.currentUser.statusIcon = $scope.statusIcon[status];
+    });
+
 });
